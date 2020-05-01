@@ -1,0 +1,11 @@
+data
+venv
+target
+flink-1.6.1
+scripts/python/.ipynb_checkpoints
+.ipynb_checkpoints
+dependency-reduced-pom.xml
+flink-1.9.1
+.idea
+scripts/odroids
+*.iml

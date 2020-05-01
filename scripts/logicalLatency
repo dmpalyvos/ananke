@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+shopt -s nullglob # Prevent null globs
+
+if [[ ! -e  $1 ]]; then
+    echo "Directory does not exist: $1"
+    exit 1
+fi
+
+
+COMMIT_HASH=$(git rev-parse --short HEAD)
+JAR="$(pwd)/target/genealog-flink-experiments-${COMMIT_HASH}.jar"
+
+cd $1
+for outFile in *.out; do
+    component=$(cut -d'_' -f2 <<< "$outFile")
+    index=$(cut -d'_' -f3 <<< "$outFile")
+    java -cp $JAR io.palyvos.provenance.lineage.util.AckDeliveryDelayExtractor "$1/${outFile}" "$1/logical-latency_${component}_${index}.csv"
+done
