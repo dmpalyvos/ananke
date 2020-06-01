@@ -15,11 +15,11 @@ import java.util.List;
 public class CarLocalDataProvider {
 
     static long get_ts(File file) {
-        String[] fileNameWithoutEndingSplitByUnderscore =  file.getName().split("\\.")[0].split("-");
+        String[] fileNameWithoutEndingSplitByUnderscore =  file.getName().replace("objects_","").split("\\.")[0].split("-");
         return Long.parseLong(fileNameWithoutEndingSplitByUnderscore[fileNameWithoutEndingSplitByUnderscore.length-1]);
     }
 
-    public static void main(String[] args) throws java.io.IOException, ParseException, InterruptedException {
+    public static void main(String[] args) throws IOException, ParseException, InterruptedException {
 
         // command line option parsing --------------------------
         Options options = new Options();
@@ -88,15 +88,10 @@ public class CarLocalDataProvider {
             System.out.println("--Reading files into list and sorting by timestamp");
 
             for (File file : listOfFiles) {
-                if (!(file.getName().contains("txt"))) { //then it must be a data file, not an annotation file
+                if (file.getName().contains("txt")) {
                     String cameraType;
-                    cameraType = file.getName().split("-")[0]; //this is lidar, or ring_front_center, or ...
-                    for (File file2 : listOfFiles) {
-                        // now, search for the annotation file2 that belongs to file
-                        if ((file2.getName().contains(file.getName().split("\\.")[0])) & (file2.getName().contains("objects"))) {
-                            timestampList.add(new Tuple4<>(get_ts(file), cameraType, file, file2));
-                        }
-                    }
+                    cameraType = file.getName().replace("objects_","").split("-")[0]; //this is lidar, or ring_front_center, or ...
+                    timestampList.add(new Tuple4<>(get_ts(file), cameraType, file, file));
                 }
             }
 
@@ -107,6 +102,7 @@ public class CarLocalDataProvider {
             combinedTimestampList = new ArrayList();
 
             for (int i = 0; i < timestampList.size(); i += 3) {
+                System.out.println(timestampList.get(i));
                 Tuple4<Long, String, File, File> elem_1 = timestampList.get(i);
                 Tuple4<Long, String, File, File> elem_2 = timestampList.get(i + 1);
                 Tuple4<Long, String, File, File> elem_3 = timestampList.get(i + 2);
