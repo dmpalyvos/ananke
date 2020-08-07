@@ -10,24 +10,15 @@ queries=(
 )
 
 variants=(
-"noprovenance"
-"provenance"
-"provenance"
 "provenance"
 )
 # The suffixes for the experiment results folders
 # Need to be in the same order as the variants array
 variantAbbreviations=(
-"NP"
-"GL1"
 "ANK1"
-"ANK1S"
 )
 variantExtraArgs=(
-"--sourceIP ${SOURCE_IP} --sourcePort ${SOURCE_PORT}"
-"--aggregateStrategy sortedPtr --provenanceActivator GENEALOG --sourceIP ${SOURCE_IP} --sourcePort ${SOURCE_PORT}"
 "--aggregateStrategy sortedPtr --provenanceActivator ANANKE --sourceIP ${SOURCE_IP} --sourcePort ${SOURCE_PORT}"
-"--aggregateStrategy sortedPtr --provenanceActivator ANANKE_STD --sourceIP ${SOURCE_IP} --sourcePort ${SOURCE_PORT}"
 )
 
 
