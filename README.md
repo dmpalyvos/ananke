@@ -52,6 +52,7 @@ Experiment scripts are found in `scripts/experiments` and can be executed by cal
 ### Automatic reproduction of paper's experiments and plots
 
 Here, we describe how to automatically reproduce the results from our paper on your available hardware.
+**Caution: The dataset used for the Smart Grid queries must not be published due to privacy regulations, the corresponding experiments can thus not be reproduced by third parties.**
 
 #### Manual experiment execution and plotting
 
