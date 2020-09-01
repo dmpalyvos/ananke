@@ -6,21 +6,19 @@ All steps have been tested under **Ubuntu 20.04** and should run with other Linu
 
 ## Setup
 
-Two setups are offered, automated and manual.
+Two setups are offered, automated and manual. In any case, resolve the dependencies first.
 
-### Automated
-
-This method will automatically download Apache Flink 1.10 and the input datasets, configure path variables, compile the Ananke framework and run a short demonstrator experiment to see whether the setup was succesful.
-
-#### Dependencies required before setup
+### Dependencies required before setup
 
 - git
 - maven (sudo apt install maven) 
 - unzip (sudo apt install unzip) 
 - java (sudo apt install default-jdk) 
-- docker ([see here](https://docs.docker.com/engine/install/ubuntu/)), [setup to run without root](https://docs.docker.com/engine/install/linux-postinstall/)
+- docker ([see here](https://docs.docker.com/engine/install/ubuntu/)), must be [setup to run without root](https://docs.docker.com/engine/install/linux-postinstall/)
 
-#### Step-by-step
+### Automated
+
+This method will automatically download Apache Flink 1.10 and the input datasets, configure path variables, compile the Ananke framework and run a short demonstrator experiment to see whether the setup was succesful.
 
 1. Clone this repository.
 2. From the top-level folder, run `./auto_setup.sh`.
