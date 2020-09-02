@@ -17,4 +17,4 @@ countdown 5 "to begin."
 test -d "data/output/${OUTPUT_DATA_FOLDER}" || { echo "--------"; echo CRITICAL: Output folder "${OUTPUT_DATA_FOLDER}" not found, aborting...; exit; }
 
 # # plot
-# # python3 "${PLOT_SCRIPT}" --plotStyle performance --figureTitle "Performance - Linear Road Queries" --inputData "${OUTPUT_DATA_FOLDER}"
+# # python3 "${PLOT_SCRIPT}" --plotStyle performance --figureTitle "Performance - Vehicular Tracking" --inputData "data/output/${OUTPUT_DATA_FOLDER}"
