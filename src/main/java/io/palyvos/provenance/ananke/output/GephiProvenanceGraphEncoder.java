@@ -105,11 +105,21 @@ public class GephiProvenanceGraphEncoder implements ProvenanceGraphEncoder, Seri
   }
 
   @Override
+  public void sourceVertex(long uid, String tuple) {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
   public void sinkVertex(TimestampedUIDTuple tuple, long streamTimestamp, long dataTimestamp) {
     DetailedUID uid = DetailedUID.ofLong(tuple.getUID());
     addNode(
         uid, uid.tupleUID, tuple, SINK_TUPLE_TYPE,
         false, tuple.getTimestamp());
+  }
+
+  @Override
+  public void sinkVertex(long uid, String tuple) {
+    throw new UnsupportedOperationException();
   }
 
   @Override

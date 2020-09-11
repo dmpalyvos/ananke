@@ -2,6 +2,6 @@
 
 COMMIT="$(git rev-parse --short HEAD)"
 mvn clean package
-mv "target/ananke-0.1.jar" "target/ananke-${COMMIT}.jar"
+mv "target/genealog-flink-experiments-1.0-SNAPSHOT.jar" "target/genealog-flink-experiments-${COMMIT}.jar"
 echo "Using commit $COMMIT"
 

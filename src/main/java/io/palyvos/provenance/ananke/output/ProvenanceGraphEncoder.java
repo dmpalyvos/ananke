@@ -5,9 +5,14 @@ import io.palyvos.provenance.util.TimestampedUIDTuple;
 import org.apache.commons.lang3.Validate;
 
 public interface ProvenanceGraphEncoder {
+
   void sourceVertex(TimestampedUIDTuple tuple, long streamTimestamp, long dataTimestamp);
 
+  void sourceVertex(long uid, String tuple);
+
   void sinkVertex(TimestampedUIDTuple tuple, long streamTimestamp, long dataTimestamp);
+
+  void sinkVertex(long uid, String tuple);
 
   default void edge(TimestampedUIDTuple sourceTuple, GenealogTuple sinkTuple, long timestamp) {
     Validate.notNull(sourceTuple);

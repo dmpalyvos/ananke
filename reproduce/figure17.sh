@@ -1,3 +1,5 @@
+#!/bin/bash
+
 . shared_vars.sh
 
 EXPERIMENT_NAME="synthetic1"
@@ -8,13 +10,14 @@ cd ..
 echo "Reproduce Fig. 17 in two steps:"
 echo "   1) run the underlying experiment"
 echo "   2) plot the experiment data"
-test -d "data/output/${OUTPUT_DATA_FOLDER}" && { echo "--------"; echo WARNING: Output folder "${OUTPUT_DATA_FOLDER}" exists already. Proceeding anyways.; }
+test -d "${OUTPUT_PATH}/${OUTPUT_DATA_FOLDER}" && { echo "--------"; echo WARNING: Output folder "${OUTPUT_PATH}/${OUTPUT_DATA_FOLDER}" exists already. Proceeding anyways.; }
+echo "WARNING: This experiment consumes a lot of memory. Please ensure that Flink is configured accordingly."
 countdown 5 "to begin."
 
 # run experiment
-./scripts/run.sh scripts/experiments/synthetic1.sh -r 10 -d 5 -c "${EXPERIMENT_NAME}"
+./scripts/run.sh scripts/experiments/synthetic1.sh -r 10 -d 10 -c "${EXPERIMENT_NAME}"
 
-test -d "data/output/{OUTPUT_DATA_FOLDER}" || { echo "--------"; echo CRITICAL: Output folder "${OUTPUT_DATA_FOLDER}" not found, aborting...; exit; }
+test -d "${OUTPUT_PATH}/${OUTPUT_DATA_FOLDER}" || { echo "--------"; echo CRITICAL: Output folder "${OUTPUT_PATH}/${OUTPUT_DATA_FOLDER}" not found, aborting...; exit; }
 
 # plot
-# python3 "${PLOT_SCRIPT}" --plotStyle synthetic1 --figureTitle "Synthetic Experiment - Overlap and Provenance Size" --inputData "data/output/{OUTPUT_DATA_FOLDER}"
+python3 "${PLOT_SCRIPT}" --path "${OUTPUT_PATH}" --experiment "${OUTPUT_DATA_FOLDER}" --name synthetic1 --plot synthetic1

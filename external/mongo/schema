@@ -1,0 +1,32 @@
+sink_tuple = {
+	"type" : "sink", 
+	"sent" : false, 
+	"uid" : , 
+	"ts" : , 
+	"data" : ,
+	"stimulus" :
+	}
+
+source_tuple = {
+	"type" : "source", 
+	"sent" : false, 
+	"uid" : , 
+	"ts" : , 
+	"data" : ,
+	"expired" : false,
+	"stimulus" :
+	}
+
+edge_tuple ={
+	"type" : "edge",
+	"sent" : false,
+	"sink_id" : ,
+	"source_id" : ,
+	"stimulus" :
+	}
+
+safe_ts = {
+	"type" : "safe_ts", 
+	"sink_id" : ,
+	"ts" : ,
+	}

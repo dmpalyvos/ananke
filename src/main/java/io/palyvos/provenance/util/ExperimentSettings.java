@@ -29,17 +29,22 @@ public class ExperimentSettings implements Serializable {
   public static final String DEFAULT_SLOT_SHARING_GROUP = "default";
   public static final String SECOND_SLOT_SHARING_GROUP = "group2";
   private static final String THIRD_SLOT_SHARING_GROUP = "group3";
+  private static final String PROVENANCE_READ_TIME = "provreadtime";
+  private static final String PROVENANCE_WRITE_TIME = "provwritetime";
+  private static final String PROVENANCE_READS = "provreads";
+  private static final String PROVENANCE_WRITES = "provwrites";
+  private static final String DELIVERY_LATENCY = "deliverylatency";
 
-  @Parameter(names = "--statisticsFolder", required = true)
+  @Parameter(names = "--statisticsFolder", required = true, description = "path where output files will be stored")
   private String statisticsFolder;
 
-  @Parameter(names = "--inputFile")
+  @Parameter(names = "--inputFile", description = "the input file of the streaming query")
   private String inputFile;
 
-  @Parameter(names = "--outputFile", required = true)
+  @Parameter(names = "--outputFile", required = true, description = "the name of the file to store where the output of the query will be stored")
   private String outputFile;
 
-  @Parameter(names = "--sourcesNumber", required = true)
+  @Parameter(names = "--sourcesNumber", required = true, description = "number of sources of the streaming query")
   private int sourcesNumber = 1;
 
   @Parameter(names = "--autoFlush")
@@ -48,35 +53,35 @@ public class ExperimentSettings implements Serializable {
   @Parameter(names = "--sinkParallelism")
   private int sinkParallelism = 1;
 
-  @Parameter(names = "--distributed")
+  @Parameter(names = "--distributed", description = "configure the query for distributed execution")
   private boolean distributed;
 
-  @Parameter(names = "--traversalStatistics")
+  @Parameter(names = "--traversalStatistics", description = "record GeneaLog graph traversal statistics")
   private boolean traversalStatistics;
 
-  @Parameter(names = "--sourceRepetitions")
+  @Parameter(names = "--sourceRepetitions", description = "number of times to repeat the source input")
   private int sourceRepetitions = 1;
 
   @Parameter(names = "--idShift")
   private long idShift = 0;
 
-  @Parameter(names = "--sourceIP")
+  @Parameter(names = "--sourceIP", description = "IP address of the remote data source")
   private String sourceIP;
 
-  @Parameter(names = "--sourcePort")
+  @Parameter(names = "--sourcePort", description = "port of the remote data source")
   private int sourcePort;
 
-  @Parameter(names = "--maxParallelism")
+  @Parameter(names = "--maxParallelism", description = "maximum allowed parallelism")
   private int maxParallelism = 4;
 
-  @Parameter(names = "--provenanceActivator")
+  @Parameter(names = "--provenanceActivator", description = "provenance algorithm, e.g., ANANKE, GENEALOG, etc.")
   private ProvenanceActivator provenanceActivator = ProvenanceActivator.GENEALOG;
 
-  @Parameter(names = "--aggregateStrategy", converter = AggregateStrategyConverter.class)
+  @Parameter(names = "--aggregateStrategy", converter = AggregateStrategyConverter.class, description = "strategy for handling out-of-order aggregate tuples")
   private Supplier<ProvenanceAggregateStrategy> aggregateStrategySupplier =
       (Supplier<ProvenanceAggregateStrategy> & Serializable) UnsortedPointersAggregateStrategy::new;
 
-  @Parameter(names = "--graphEncoder")
+  @Parameter(names = "--graphEncoder", description = "output encoder for the forward-provenance graph")
   private String graphEncoder = TimestampedFileProvenanceGraphEncoder.class.getSimpleName();
 
   @Parameter(names = "--watermarkInterval")
@@ -102,6 +107,15 @@ public class ExperimentSettings implements Serializable {
 
   @Parameter(names = "--disableSinkChaining")
   private boolean disableSinkChaining;
+
+  @Parameter(names = "--pollFrequencyMillis", description = "poll frequency for external DB experiments")
+  private long pollFrequencyMillis = 1000;
+
+  @Parameter(names = "--uniqueDbKeys", description = "enforce unique key contraints on relational DB experiments")
+  private boolean uniqueDbKeys;
+
+  @Parameter(names = "--dbFlowControl", description = "enforce basic flow control in external DB writer")
+  private boolean dbFlowControl;
 
   public static ExperimentSettings newInstance(String[] args) {
     ExperimentSettings settings = new ExperimentSettings();
@@ -164,6 +178,10 @@ public class ExperimentSettings implements Serializable {
     return aggregateStrategySupplier;
   }
 
+  public boolean dbFlowControl() {
+    return dbFlowControl;
+  }
+
   public String inputFile() {
     return String.format("%s.%s", inputFile, INPUT_EXTENSION);
   }
@@ -186,6 +204,26 @@ public class ExperimentSettings implements Serializable {
 
   public String outputFile(int taskIndex, String operator) {
     return statisticsFile(operator, taskIndex, statisticsFolder(), outputFile, "out");
+  }
+
+  public String provenanceReadsFile(int taskIndex, String operator) {
+    return statisticsFile(operator, taskIndex, statisticsFolder(), PROVENANCE_READS, "csv");
+  }
+
+  public String provenanceWritesFile(int taskIndex, String operator) {
+    return statisticsFile(operator, taskIndex, statisticsFolder(), PROVENANCE_WRITES, "csv");
+  }
+
+  public String provenanceReadTimeFile(int taskIndex, String operator) {
+    return statisticsFile(operator, taskIndex, statisticsFolder(), PROVENANCE_READ_TIME, "csv");
+  }
+
+  public String provenanceWriteTimeFile(int taskIndex, String operator) {
+    return statisticsFile(operator, taskIndex, statisticsFolder(), PROVENANCE_WRITE_TIME, "csv");
+  }
+
+  public String deliveryLatencyFile(int taskIndex, String operator) {
+    return statisticsFile(operator, taskIndex, statisticsFolder(), DELIVERY_LATENCY, "csv");
   }
 
   public long idShift() {
@@ -252,26 +290,30 @@ public class ExperimentSettings implements Serializable {
 
   public ProvenanceGraphEncoder newGraphEncoder(String name, int subtaskIndex) {
 
-      if (FileProvenanceGraphEncoder.class.getSimpleName().equals(graphEncoder)) {
-       return new FileProvenanceGraphEncoder(outputFile(subtaskIndex, name), autoFlush);
-      }
-      else if (TimestampedFileProvenanceGraphEncoder.class.getSimpleName().equals(graphEncoder)) {
-        return new TimestampedFileProvenanceGraphEncoder(outputFile(subtaskIndex, name), autoFlush);
-      }
-      else if (GephiProvenanceGraphEncoder.class.getSimpleName().equals(graphEncoder)) {
-        return new GephiProvenanceGraphEncoder("workspace1");
-      }
-      else if (NoOpProvenanceGraphEncoder.class.getSimpleName().equals(graphEncoder)) {
-        return new NoOpProvenanceGraphEncoder();
-      }
-      else {
-        throw new IllegalArgumentException(String.format("Invalid graph encoder: %s", graphEncoder));
-      }
+    if (FileProvenanceGraphEncoder.class.getSimpleName().equals(graphEncoder)) {
+      return new FileProvenanceGraphEncoder(outputFile(subtaskIndex, name), autoFlush);
+    } else if (TimestampedFileProvenanceGraphEncoder.class.getSimpleName().equals(graphEncoder)) {
+      return new TimestampedFileProvenanceGraphEncoder(outputFile(subtaskIndex, name), autoFlush);
+    } else if (GephiProvenanceGraphEncoder.class.getSimpleName().equals(graphEncoder)) {
+      return new GephiProvenanceGraphEncoder("workspace1");
+    } else if (NoOpProvenanceGraphEncoder.class.getSimpleName().equals(graphEncoder)) {
+      return new NoOpProvenanceGraphEncoder();
+    } else {
+      throw new IllegalArgumentException(String.format("Invalid graph encoder: %s", graphEncoder));
+    }
 
   }
 
   public boolean disableSinkChaining() {
     return disableSinkChaining;
+  }
+
+  public long pollFrequencyMillis() {
+    return pollFrequencyMillis;
+  }
+
+  public boolean uniqueSqlKeys() {
+    return uniqueDbKeys;
   }
 
   private static class AggregateStrategyConverter

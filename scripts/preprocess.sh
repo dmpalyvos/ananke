@@ -4,8 +4,8 @@ shopt -s nullglob # Prevent null globs
 
 ROOT_FOLDER=$1
 
-PREPROCESS_FILES=("rate" "latency" "traversal")
-COPY_FILES=("memory" "cpu")
+PREPROCESS_FILES=("rate" "latency" "traversal" "provreads" "provwrites" "provwritetime" "provreadtime" "deliverylatency")
+COPY_FILES=("memory" "cpu" "externalmemory" "externalcpu")
 EXTENSION=".csv"
 
 

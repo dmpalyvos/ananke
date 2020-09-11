@@ -15,7 +15,7 @@ import io.palyvos.provenance.usecases.smartgrid.provenance.SmartGridTupleGL;
 import io.palyvos.provenance.genealog.GenealogData;
 import io.palyvos.provenance.genealog.GenealogDataSerializer;
 import io.palyvos.provenance.genealog.GenealogJoinHelper;
-import io.palyvos.provenance.genealog.GenealogLatencyLoggingSink;
+import io.palyvos.provenance.genealog.GenealogFileSink;
 import org.apache.flink.api.common.functions.JoinFunction;
 import org.apache.flink.streaming.api.TimeCharacteristic;
 import org.apache.flink.streaming.api.datastream.DataStream;
@@ -73,7 +73,7 @@ public class SmartGridAnomaly {
         .window(TumblingEventTimeWindows.of(ANOMALY_JOIN_WINDOW_SIZE))
         .apply(new AnomalyJoinFunctionGL())
         .filter(s -> s.getValue() > ANOMALY_LIMIT)
-        .addSink(GenealogLatencyLoggingSink.newInstance(settings))
+        .addSink(GenealogFileSink.newInstance(settings))
         .setParallelism(settings.sinkParallelism());
 
     env.execute("SmartGridAnomaly");

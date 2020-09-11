@@ -54,6 +54,9 @@ while getopts ":d:e:v:c:p:r:h:g" o; do
         g)
           DISTRIBUTED="--distributed"
           ;;
+        x)
+          DISCARD_OUTPUT="true"
+          ;;
         h)
           usage
           ;;
@@ -64,26 +67,28 @@ while getopts ":d:e:v:c:p:r:h:g" o; do
 done
 shift $((OPTIND-1))
 # Additional CLI args that can be passed to the experiment (after the script args!)
-EXPERIMENT_ARGS="$*"
+CLI_ARGS="$*"
 
 
 
 # Load config file, defining $BASE_DIR and $FLINK_DIR
 CONFIG_FILE="scripts/config.sh"
 source "$CONFIG_FILE"
-# Commit number + unique identiier to separate executions
+# Commit number + unique identifier to separate executions
 COMMIT_HASH=$(git rev-parse --short HEAD)
 COMMIT="${COMMIT_HASH}_${COMMIT_CODE}"
 INPUT_FOLDER="data/input"
 OUTPUT_FOLDER="data/output/${COMMIT}"
 SINK_FILE="sink"
 EXTRA_SLEEP_SEC=15
-JAR="$BASE_DIR/target/ananke-${COMMIT_HASH}.jar"
+JAR="$BASE_DIR/target/genealog-flink-experiments-${COMMIT_HASH}.jar"
 MEMORY_LOGGER="$BASE_DIR/scripts/python/recordMemory.py"
 UTILIZATION_LOGGER="$BASE_DIR/scripts/python/utilization.py"
 FLINK_JOB_STOPPER="$BASE_DIR/scripts/python/flinkJobStopper.py"
 MEMORY_FILE="memory.csv"
 CPU_FILE="cpu.csv"
+EXTERNAL_MEMORY_FILE="externalmemory.csv"
+EXTERNAL_CPU_FILE="externalcpu.csv"
 GC_COUNT_YOUNG_FILE="gc_count_young.csv"
 GC_COUNT_OLD_FILE="gc_count_old.csv"
 GC_TIME_YOUNG_FILE="gc_time_young.csv"
@@ -201,11 +206,11 @@ for rep in $(seq 1 $REPS); do
         --inputFile ${inputPath} \
         --outputFile $SINK_FILE \
         --sourceRepetitions ${sourceRep} \
-        --sourcesNumber ${SOURCES_NUMBER}
+        --sourcesNumber ${SOURCES_NUMBER} \
         --autoFlush \
-        $DISTRIBUTED\
+        $DISTRIBUTED \
         ${variantExtraArgs[$variantID]} \
-        $EXPERIMENT_ARGS"
+        $EXPERIMENT_ARGS $CLI_ARGS"
 
         if [[ ! $flinkCmd =~ "sinkParallelism" ]]; then
           flinkCmd="$flinkCmd --sinkParallelism $parallelism"
@@ -216,19 +221,22 @@ for rep in $(seq 1 $REPS); do
         fi
 
 
+        restartCluster
         (( experimentIndex++ ))
-        echo --------------------------
-        echo ">>>>> [$(date +%Y-%m-%d\ %H:%M:%S)] Initiating experiment ${COMMIT} ${experimentIndex}/${experimentCount} <<<<<"
-        echo --------------------------
+
 
         commandExecuted=false
         while [[ $commandExecuted == "false" ]]; do
           commandExecuted=true
 
+          echo --------------------------
+          echo ">>>>> [$(date +%Y-%m-%d\ %H:%M:%S)] Initiating experiment ${COMMIT} ${experimentIndex}/${experimentCount} <<<<<"
+          echo --------------------------
+
           # GC to clear up memory statistics from previous experiment
           echo "Forcing GC on TaskManagers..."
           executeForAllNodes "${FORCE_GC_CMD}"
-          sleep 15
+          sleep 5
 
           # Create output directories
           executeForAllNodes "mkdir -p $BASE_DIR/$statisticsFolder"
@@ -237,18 +245,24 @@ for rep in $(seq 1 $REPS); do
           # Clean up old data
           executeForAllNodes "rm $BASE_DIR/$statisticsFolder/* > /dev/null 2>&1"
           echo
-          echo "[$(date +%Y-%m-%d\ %H:%M:%S)] Executing $experiment/${variant}/parallelism ${parallelism}/rep ${rep}"
+          echo "[$(date +%Y-%m-%d\ %H:%M:%S)] Executing $experiment/${abbreviation}/parallelism ${parallelism}/rep ${rep}"
           echo
+          # Run (optional) init command
+          eval "$EXTERNAL_INIT_COMMAND"
+          # Start (optional) data source process
+          if [[ -n $DATASOURCE_COMMAND ]]; then
+            eval "$DATASOURCE_COMMAND &"
+            activeProcesses+=("$!")
+            sleep 5
+          fi
           # Start memory logger
           python3 "$UTILIZATION_LOGGER" \
           --memoryFile "$BASE_DIR/$statisticsFolder/$MEMORY_FILE" \
           --cpuFile "$BASE_DIR/$statisticsFolder/$CPU_FILE" &
           activeProcesses+=("$!")
-          # Start (optional) data source process
-          if [[ -n $DATASOURCE_COMMAND ]]; then
-            eval "$DATASOURCE_COMMAND &"
-            activeProcesses+=("$!")
-          fi
+          # Start external utilization logger
+          ./scripts/utilization_external.sh "$BASE_DIR/$statisticsFolder/$EXTERNAL_CPU_FILE" "$BASE_DIR/$statisticsFolder/$EXTERNAL_MEMORY_FILE" &
+          activeProcesses+=("$!")
           # Start Task Stopper and then Experiment
           python3 "${FLINK_JOB_STOPPER}" "${DURATION}" & # Task stopper must be started after flink job
           activeProcesses+=("$!")
@@ -265,8 +279,8 @@ for rep in $(seq 1 $REPS); do
               echo "$flinkOutput"
               echo "Flink job crashed. (Exit Code: $flinkExitCode)"
               commandExecuted=false
-              [[ $EXECUTION_ENVIRONMENT == "odroid" ]] && restartCluster
-              echo "Retrying experiment..."
+              restartCluster
+              echo ">>> [WARNING] Retrying experiment..."
             fi
           fi
           # If DONE was set by the exit handler, remove trap and end loop
@@ -290,7 +304,10 @@ for node in "${nodes[@]}"; do
   scp -r "${node}:${BASE_DIR}/${OUTPUT_FOLDER}" "data/output"
 done
 
-sleep 30
+if [[ $DISCARD_OUTPUT == "true" ]]; then
+  find "$OUTPUT_FOLDER" -name logical-latency.csv -delete
+  find "$OUTPUT_FOLDER" -name *.out -delete
+fi
 
 # Preprocess results
 bash "scripts/preprocess.sh" "$OUTPUT_FOLDER"

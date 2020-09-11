@@ -1,6 +1,6 @@
 #!/bin/bash
 
-REMOTE_DIR="ananke/data/output"
+REMOTE_DIR="genealog-flink-experiments/data/output"
 TARGET_DIR="data/remote"
 
 if [ -z $1 ]; then

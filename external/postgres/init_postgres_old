@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+[[ -n $1 ]] || { echo "Script path required"; exit 1; }
+POSTGRES_DIR=$(dirname $0)
+DROP_ALL_SCRIPT="$POSTGRES_DIR/drop_all.sql"
+INIT_SCRIPT="$POSTGRES_DIR/$1"
+
+[[ -e $DROP_ALL_SCRIPT ]] || { echo "Postgres cleanup file not found!"; exit 1; }
+[[ -e $INIT_SCRIPT ]] || { echo "Postgres init file $INIT_SCRIPT not found!"; exit 1; }
+
+echo "Resetting postgres state..."
+cat "$DROP_ALL_SCRIPT" | docker exec -i postgres psql -U postgres -d ananke > /dev/null
+cat "$INIT_SCRIPT" | docker exec -i postgres psql -U postgres -d ananke > /dev/null

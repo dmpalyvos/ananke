@@ -20,5 +20,3 @@ variantAbbreviations=(
 variantExtraArgs=(
 "--aggregateStrategy sortedPtr --provenanceActivator ANANKE --sourceIP ${SOURCE_IP} --sourcePort ${SOURCE_PORT}"
 )
-
-

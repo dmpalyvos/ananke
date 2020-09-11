@@ -1,5 +1,4 @@
-#!/bin/bah
-INPUT_FILE="data/input/only_annotations"
+INPUT_FILE="/home/common/cats_data/car_local/car_local"
 SOURCES_NUMBER="1"
 SOURCE_IP="localhost"
 SOURCE_PORT=9999

@@ -1,5 +1,6 @@
 COMMIT_HASH=$(git rev-parse --short HEAD)
-PLOT_SCRIPT="PATH_TO_PLOT_SCRIPT.py"
+PLOT_SCRIPT="plot.py"
+OUTPUT_PATH="data/output"
 
 countdown() {
   secs=$1

@@ -1,4 +1,3 @@
-#!/bin/bah
 source scripts/experiments/template_sg.sh
 variants=(
 "noprovenance"

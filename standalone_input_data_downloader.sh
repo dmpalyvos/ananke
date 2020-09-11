@@ -5,13 +5,13 @@ CARLOCAL="carLocalInput.zip"
 echo "Downloading input data to data/input/"
 echo
 echo "File 1/3"
-wget -q --show-progress -O data/input/${CARCLOUD} https://chalmersuniversity.box.com/shared/static/qzqvlsatyb37a9d3kvfk224ehj0bipki.txt
+wget -O data/input/${CARCLOUD} https://chalmersuniversity.box.com/shared/static/qzqvlsatyb37a9d3kvfk224ehj0bipki.txt
 echo
 echo "File 2/3"
-wget -q --show-progress -O data/input/${CARLOCAL} https://chalmersuniversity.box.com/shared/static/7s9ewtys69aik5p8bwapbazjs2u9l8vv.zip
+wget -O data/input/${CARLOCAL} https://chalmersuniversity.box.com/shared/static/7s9ewtys69aik5p8bwapbazjs2u9l8vv.zip
 echo
 echo "File 3/3"
-wget -q --show-progress -O data/input/${LR} https://chalmersuniversity.box.com/shared/static/ioal17insfry4naurtybkp44dxev59ta.txt
+wget -O data/input/${LR} https://chalmersuniversity.box.com/shared/static/ioal17insfry4naurtybkp44dxev59ta.txt
 echo
 echo "Extracting files..."
 unzip -q data/input/${CARLOCAL} -d data/input/
