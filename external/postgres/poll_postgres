@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+POSTGRES_DIR=$(dirname $0)
+POLL_SCRIPT="$POSTGRES_DIR/provenance_query.sql"
+
+[[ -e $POLL_SCRIPT ]] || { echo "Postgres poll script $POLL_SCRIPT not found!"; exit 1; }
+
+while sleep 1; do
+  cat "$POLL_SCRIPT" | docker exec -i postgres psql -U postgres -d ananke
+done

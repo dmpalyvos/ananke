@@ -6,17 +6,17 @@ import io.palyvos.provenance.util.TimestampedUIDTuple;
 import java.util.Set;
 import org.apache.flink.configuration.Configuration;
 
-public class GenealogLatencyLoggingSinkTraversalStatistics<T extends GenealogTuple> extends
-    GenealogLatencyLoggingSink<T> {
+public class GenealogFileSinkTraversalStatistics<T extends GenealogTuple> extends
+    GenealogFileSink<T> {
 
   private transient AvgStat traversalStatistic;
 
-  public GenealogLatencyLoggingSinkTraversalStatistics(
+  public GenealogFileSinkTraversalStatistics(
       ExperimentSettings settings) {
     super(settings);
   }
 
-  public GenealogLatencyLoggingSinkTraversalStatistics(String name,
+  public GenealogFileSinkTraversalStatistics(String name,
       ExperimentSettings settings) {
     super(name, settings);
   }

@@ -4,17 +4,21 @@ import io.palyvos.provenance.util.TimestampedUIDTuple;
 import io.palyvos.provenance.util.TimestampConverter;
 import java.util.Objects;
 import org.apache.commons.lang3.Validate;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 class TupleProvenanceKey extends ProvenanceKey {
 
-  private final TimestampedUIDTuple tuple;
+  final long uid;
   private final long convertedTimestamp;
+  private final long stimulus;
 
-  TupleProvenanceKey(TimestampedUIDTuple tuple, TimestampConverter timestampConverter) {
+  TupleProvenanceKey(TimestampedUIDTuple tuple, TimestampConverter timestampConverter,
+      long stimulus) {
     Validate.notNull(tuple);
-    this.tuple = tuple;
+    this.uid = tuple.getUID();
     this.convertedTimestamp = timestampConverter.apply(tuple.getTimestamp());
     Validate.isTrue(convertedTimestamp >= 0, "Negative timestamp!");
+    this.stimulus = stimulus;
   }
 
   @Override
@@ -23,8 +27,13 @@ class TupleProvenanceKey extends ProvenanceKey {
   }
 
   @Override
+  long stimulus() {
+    return stimulus;
+  }
+
+  @Override
   long tieBreaker() {
-    return tuple.getUID();
+    return uid;
   }
 
   @Override
@@ -36,17 +45,20 @@ class TupleProvenanceKey extends ProvenanceKey {
       return false;
     }
     TupleProvenanceKey that = (TupleProvenanceKey) o;
-    return Objects.equals(tuple.getUID(), that.tuple.getUID());
+    return uid == that.uid &&
+        convertedTimestamp == that.convertedTimestamp;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(tuple);
+    return Objects.hash(uid, convertedTimestamp);
   }
 
   @Override
   public String toString() {
-//    return String.format("{uid: %d, ts: %d} | %s", tuple.getUID(), convertedTimestamp, tuple);
-    return String.format("{uid: %d} | %s", tuple.getUID(), tuple);
+    return new ToStringBuilder(this)
+        .append("uid", uid)
+        .append("convertedTimestamp", convertedTimestamp)
+        .toString();
   }
 }

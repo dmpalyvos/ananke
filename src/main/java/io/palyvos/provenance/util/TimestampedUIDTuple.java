@@ -1,5 +1,7 @@
 package io.palyvos.provenance.util;
 
-public interface TimestampedUIDTuple extends UIDTuple, TimestampedTuple {
+import java.io.Serializable;
+
+public interface TimestampedUIDTuple extends UIDTuple, TimestampedTuple, Serializable {
 
 }

@@ -68,6 +68,14 @@ public class AckDeliveryDelayExtractor {
           System.err.println("Edge " + id1 + "," + id2 + " came before both vertices were provided");
           continue;
         }
+        if (acks.containsKey(id1)) {
+          System.err.println("Edge " + id1 + "," + id2 + " came after ack for vertex " + id1);
+          continue;
+        }
+        if (acks.containsKey(id2)) {
+          System.err.println("Edge " + id1 + "," + id2 + " came after ack for vertex " + id2);
+          continue;
+        }
         long latency = edgeTimestamp - Math.max(v1Timestamp, v2Timestamp);
         f0.println(EX.getType(l) + "," + dummyTimestamp++ + "," + latency);
       }

@@ -10,7 +10,11 @@ import java.util.Set;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.functions.sink.RichSinkFunction;
 
-public class GenealogLatencyLoggingSink<T extends GenealogTuple> extends RichSinkFunction<T> {
+/**
+ * Sink that WRITES {@link GenealogTuple} stream (including provenance) to file and records
+ * latency.
+ */
+public class GenealogFileSink<T extends GenealogTuple> extends RichSinkFunction<T> {
 
   private static final String DEFAULT_NAME = "SINK";
   protected final ExperimentSettings settings;
@@ -19,28 +23,29 @@ public class GenealogLatencyLoggingSink<T extends GenealogTuple> extends RichSin
   protected final String name;
   private final GenealogGraphTraverser genealogGraphTraverser;
 
-  public GenealogLatencyLoggingSink(ExperimentSettings settings) {
+  public GenealogFileSink(ExperimentSettings settings) {
     this(DEFAULT_NAME, settings);
   }
 
-  public GenealogLatencyLoggingSink(String name, ExperimentSettings settings) {
+  public GenealogFileSink(String name, ExperimentSettings settings) {
     this.settings = settings;
     this.name = name;
-    this.genealogGraphTraverser = new GenealogGraphTraverser(settings.aggregateStrategySupplier().get());
+    this.genealogGraphTraverser = new GenealogGraphTraverser(
+        settings.aggregateStrategySupplier().get());
   }
 
-  public static <T extends GenealogTuple> GenealogLatencyLoggingSink<T> newInstance(
+  public static <T extends GenealogTuple> GenealogFileSink<T> newInstance(
       ExperimentSettings settings) {
     return (settings.graphTraversalStatistics()) ?
-        new GenealogLatencyLoggingSinkTraversalStatistics<>(settings) :
-        new GenealogLatencyLoggingSink<>(settings);
+        new GenealogFileSinkTraversalStatistics<>(settings) :
+        new GenealogFileSink<>(settings);
   }
 
-  public static <T extends GenealogTuple> GenealogLatencyLoggingSink<T> newInstance(
+  public static <T extends GenealogTuple> GenealogFileSink<T> newInstance(
       String name, ExperimentSettings settings) {
     return (settings.graphTraversalStatistics()) ?
-        new GenealogLatencyLoggingSinkTraversalStatistics<>(name, settings) :
-        new GenealogLatencyLoggingSink<>(name, settings);
+        new GenealogFileSinkTraversalStatistics<>(name, settings) :
+        new GenealogFileSink<>(name, settings);
 
   }
 
@@ -48,9 +53,11 @@ public class GenealogLatencyLoggingSink<T extends GenealogTuple> extends RichSin
   @Override
   public void open(Configuration parameters) throws Exception {
     final int taskIndex = getRuntimeContext().getIndexOfThisSubtask();
-    this.latencyStatistic = new AvgStat(settings.latencyFile(taskIndex, name), settings.autoFlush());
+    this.latencyStatistic = new AvgStat(settings.latencyFile(taskIndex, name),
+        settings.autoFlush());
     try {
-      pw = new PrintWriter(new FileWriter(settings.outputFile(taskIndex, name)), settings.autoFlush());
+      pw = new PrintWriter(new FileWriter(settings.outputFile(taskIndex, name)),
+          settings.autoFlush());
     } catch (IOException e) {
       throw new IllegalArgumentException(e);
     }

@@ -17,6 +17,11 @@ class TimestampProvenanceKey extends ProvenanceKey {
   }
 
   @Override
+  long stimulus() {
+    return Long.MAX_VALUE;
+  }
+
+  @Override
   long tieBreaker() {
     return Long.MAX_VALUE;
   }

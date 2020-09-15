@@ -1,4 +1,3 @@
-#!/bin/bah
 INPUT_FILE="/home/bastian/data/beijing_allIn1day_ts_sorted.txt"
 SOURCES_NUMBER="1"
 SOURCE_IP="10.0.0.1"

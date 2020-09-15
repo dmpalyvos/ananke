@@ -11,7 +11,7 @@ import io.palyvos.provenance.usecases.smartgrid.provenance.SmartGridSourceGL;
 import io.palyvos.provenance.usecases.smartgrid.provenance.SmartGridTupleGL;
 import io.palyvos.provenance.genealog.GenealogData;
 import io.palyvos.provenance.genealog.GenealogDataSerializer;
-import io.palyvos.provenance.genealog.GenealogLatencyLoggingSink;
+import io.palyvos.provenance.genealog.GenealogFileSink;
 import org.apache.flink.streaming.api.TimeCharacteristic;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.functions.timestamps.AscendingTimestampExtractor;
@@ -58,7 +58,7 @@ public class SmartGridBlackout {
         .aggregate(new CountAggregateFunction(settings.aggregateStrategySupplier()))
         .slotSharingGroup(settings.secondSlotSharingGroup())
         .filter(c -> c.getCount() > BLACKOUT_MAX_COUNT)
-        .addSink(GenealogLatencyLoggingSink.newInstance(settings));
+        .addSink(GenealogFileSink.newInstance(settings));
 
     env.execute("SmartGridBlackout");
   }

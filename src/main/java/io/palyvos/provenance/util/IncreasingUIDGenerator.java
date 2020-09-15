@@ -42,6 +42,7 @@ public class IncreasingUIDGenerator {
   public static String asString(long uid) {
     long generatorIndex = (uid & ~UID_MASK) >>> UID_BITS;
     long index = uid & UID_MASK;
-    return String.format("%s:%s", Long.toHexString(generatorIndex), Long.toHexString(index));
+//    return String.format("%s:%s", Long.toHexString(generatorIndex), Long.toHexString(index));
+    return Long.toString(uid);
   }
 }

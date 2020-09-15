@@ -10,6 +10,8 @@ import org.apache.commons.lang3.Validate;
 
 public class FileProvenanceGraphEncoder implements ProvenanceGraphEncoder, Serializable {
 
+  public static final String TYPE_SOURCE = "SOURCE";
+  public static final String TYPE_SINK = "SINK";
   protected final PrintWriter writer;
 
   public FileProvenanceGraphEncoder(String outputFile, boolean autoFlush) {
@@ -22,12 +24,22 @@ public class FileProvenanceGraphEncoder implements ProvenanceGraphEncoder, Seria
 
   @Override
   public void sourceVertex(TimestampedUIDTuple tuple, long streamTimestamp, long dataTimestamp) {
-    writer.println(vertexString(tuple, "SOURCE"));
+    writer.println(vertexString(tuple, TYPE_SOURCE));
+  }
+
+  @Override
+  public void sourceVertex(long uid, String tuple) {
+    writer.println(vertexString(uid, tuple, TYPE_SOURCE));
   }
 
   @Override
   public void sinkVertex(TimestampedUIDTuple tuple, long streamTimestamp, long dataTimestamp) {
-    writer.println(vertexString(tuple, "SINK"));
+    writer.println(vertexString(tuple, TYPE_SINK));
+  }
+
+  @Override
+  public void sinkVertex(long uid, String tuple) {
+    writer.println(vertexString(uid, tuple, TYPE_SINK));
   }
 
   @Override
@@ -53,10 +65,13 @@ public class FileProvenanceGraphEncoder implements ProvenanceGraphEncoder, Seria
     writer.close();
   }
 
-  private String vertexString(TimestampedUIDTuple tuple, String type) {
+  public String vertexString(TimestampedUIDTuple tuple, String type) {
     Validate.notNull(tuple);
-    return String.format(
-        "%s ::: %s ::: %s", type, formattedUID(tuple.getUID()), tuple);
+    return vertexString(tuple.getUID(), String.valueOf(tuple), type);
+  }
+
+  private String vertexString(long uid, String tuple, String type) {
+    return String.format("%s ::: %s ::: %s", type, formattedUID(uid), tuple);
   }
 
   private String formattedUID(long uid) {

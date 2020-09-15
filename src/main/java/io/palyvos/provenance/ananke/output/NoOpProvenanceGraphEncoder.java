@@ -10,7 +10,15 @@ public class NoOpProvenanceGraphEncoder implements ProvenanceGraphEncoder, Seria
   }
 
   @Override
+  public void sourceVertex(long uid, String tuple) {
+  }
+
+  @Override
   public void sinkVertex(TimestampedUIDTuple tuple, long streamTimestamp, long dataTimestamp) {
+  }
+
+  @Override
+  public void sinkVertex(long uid, String tuple) {
   }
 
   @Override

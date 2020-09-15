@@ -102,7 +102,6 @@ public class CarLocalDataProvider {
             combinedTimestampList = new ArrayList();
 
             for (int i = 0; i < timestampList.size(); i += 3) {
-                System.out.println(timestampList.get(i));
                 Tuple4<Long, String, File, File> elem_1 = timestampList.get(i);
                 Tuple4<Long, String, File, File> elem_2 = timestampList.get(i + 1);
                 Tuple4<Long, String, File, File> elem_3 = timestampList.get(i + 2);

@@ -20,9 +20,21 @@ public class TimestampedFileProvenanceGraphEncoder extends FileProvenanceGraphEn
   }
 
   @Override
+  public void sourceVertex(long uid, String tuple) {
+    writer.format("%d %d %d ", -1, SOURCE_ORDER, -1);
+    super.sourceVertex(uid, tuple);
+  }
+
+  @Override
   public void sinkVertex(TimestampedUIDTuple tuple, long streamTimestamp, long dataTimestamp) {
     writer.format("%d %d %d ", streamTimestamp, SINK_ORDER, dataTimestamp);
     super.sinkVertex(tuple, streamTimestamp, dataTimestamp);
+  }
+
+  @Override
+  public void sinkVertex(long uid, String tuple) {
+    writer.format("%d %d %d ", -1, SINK_ORDER, -1);
+    super.sinkVertex(uid, tuple);
   }
 
   @Override

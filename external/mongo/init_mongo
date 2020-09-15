@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+SCRIPT_DIR=$(dirname $0)
+cd "$SCRIPT_DIR"
+DROP_ALL_SCRIPT="drop_collection.js"
+SETUP_SCRIPT="setup_index.js"
+
+../restart_container.sh mongo 27017
+
+echo -n "Resetting mongodb state: dropping collection: "
+javascript=$(cat ${DROP_ALL_SCRIPT})
+docker exec -i db mongo --eval "${javascript}" --quiet
+
+echo -n "Adding index to mongodb: "
+javascript=$(cat ${SETUP_SCRIPT})
+docker exec -i db mongo --eval "${javascript}" --quiet
