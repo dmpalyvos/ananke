@@ -7,7 +7,7 @@ OUTPUT_DATA_FOLDER="${COMMIT_HASH}"_"${EXPERIMENT_NAME}"
 
 cd ..
 
-echo "Reproduce Fig. 13 in two steps:"
+echo "Reproduce the figure in two steps:"
 echo "   1) run the underlying experiment"
 echo "   2) plot the experiment data"
 test -d "${OUTPUT_PATH}/${OUTPUT_DATA_FOLDER}" && { echo "--------"; echo WARNING: Output folder "${OUTPUT_PATH}/${OUTPUT_DATA_FOLDER}" exists already. Proceeding anyways.; }

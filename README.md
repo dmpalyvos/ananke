@@ -61,8 +61,8 @@ Result files are stored in the folder `data/output`.
 ### Automatic reproduction of paper's experiments and plots
 
 Here, we describe how to automatically reproduce the results from our paper on your available hardware.
-**Caution: The dataset used for the Smart Grid queries must not be published due to privacy regulations, the corresponding experiments can thus not be reproduced by third parties.**
-The folder `reproduce/` contains one bash script labelled as the corresponding figure in the paper. Executing such a script will run the experiment automatically, store the results, and create a plot of them. When reproducing Figure 20 or Table 2, `dockerd` must be running. Simply enter the folder and execute, e.g.
+
+The folder `reproduce/` contains one bash script labelled as the corresponding figure in the paper. Executing such a script will run the experiment automatically, store the results, and create a plot of them. When reproducing Figure 19 or Table 2, `dockerd` must be running. Simply enter the folder and execute, e.g.
 
 ```bash
 # Reproduce Figure 10 in the paper
@@ -70,3 +70,4 @@ The folder `reproduce/` contains one bash script labelled as the corresponding f
 ```
 For running variations of the experiments and plotting the results, we suggest inspecting the bash scripts in the `reproduce` folder.
 Beware that the hardware the experiments were executed on (as indicated in the paper) may differ from yours.
+*Note: The Smart Grid dataset cannot be published due to privacy regulations.*
