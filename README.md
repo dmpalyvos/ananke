@@ -58,6 +58,16 @@ Experiment scripts are found in `scripts/experiments` and can be executed by cal
 ```
 Result files are stored in the folder `data/output`.
 
+### Solving Memory Issues
+
+Some experiments (mainly the synthetic ones) have high memory requirements, so you might need to increase
+the memory allocated to Flink's TaskManger to avoid crashes.
+In our tests, 32GB were enough to run all experiments.
+You can configure this in `$FLINK_DIR/conf/flink-conf.yaml`, where `$FLINK_DIR` is the directory of your flink installation:
+```yaml
+taskmanager.memory.process.size: 32000m
+```
+
 ### Automatic reproduction of paper's experiments and plots
 
 Here, we describe how to automatically reproduce the results from our paper on your available hardware.
