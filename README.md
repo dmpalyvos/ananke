@@ -8,6 +8,8 @@ All steps have been tested under **Ubuntu 20.04**.
 
 ### Dependencies
 
+The following dependencies are not managed by our automatic setup and need to be installed beforehand.:
+
 - git
 - bc
 - wget
@@ -17,6 +19,8 @@ All steps have been tested under **Ubuntu 20.04**.
 - python>=3.7 + pip3
 
 For Ubuntu 20.04: `sudo apt-get install git wget bc maven unzip default-jdk python3-pip`
+
+Some experiments rely on docker to be installed:
 
 - docker ([see here](https://docs.docker.com/engine/install/ubuntu/)) must be [setup to run without root](https://docs.docker.com/engine/install/linux-postinstall/) 
 - docker-compose ([see here](https://docs.docker.com/compose/install/))
