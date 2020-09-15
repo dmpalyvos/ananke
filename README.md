@@ -80,4 +80,4 @@ The folder `reproduce/` contains one bash script labelled as the corresponding f
 ```
 For running variations of the experiments and plotting the results, we suggest inspecting the bash scripts in the `reproduce` folder.
 Beware that the hardware the experiments were executed on (as indicated in the paper) may differ from yours.
-*Note: The Smart Grid dataset cannot be published due to privacy regulations.*
+*Note: The Smart Grid dataset cannot be made available due to agreement limitations.*
