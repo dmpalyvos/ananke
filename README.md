@@ -29,13 +29,12 @@ Some experiments rely on docker to be installed:
 
 This method will automatically download Apache Flink 1.10 and the input datasets, configure path variables, compile the Ananke framework and run a short demonstrator experiment to see whether the setup was succesful.
 
-1. Clone this repository.
+1. Clone this repository: `git clone https://github.com/dmpalyvos/ananke.git`
 2. From the top-level folder, run `./auto_setup.sh`.
-3. Done.
 
 ### Manual
 
-1. Clone this repository.
+1. Clone this repository: `git clone https://github.com/dmpalyvos/ananke.git`
 2. Download Apache Flink 1.10 from [here](https://archive.apache.org/dist/flink/flink-1.10.0/flink-1.10.0-bin-scala_2.11.tgz) to a folder of your choosing.
 3. Untar Flink: `tar zxvf flink-1.10.0-bin-scala_2.11.tgz`.
 4. Open the file `scripts/config.sh` and replace `PATH_HERE` with the location of the untared Flink folder.
