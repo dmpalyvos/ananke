@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -e
 
 # AUTOMATIC SETUP SCRIPT 
 
@@ -11,7 +12,7 @@ echo "Automatic setup about to start"
 countdown 5 "to start."
 
 # 1. Download Apache Flink
-HOMEDIR=$(pwd)/flink-1.10.0
+HOMEDIR="$(pwd)/flink-1.10.0"
 echo "Downloading Apache Flink..."
 wget https://archive.apache.org/dist/flink/flink-1.10.0/flink-1.10.0-bin-scala_2.11.tgz
 echo "Unpacking Apache Flink..."
@@ -43,7 +44,7 @@ countdown 5
 
 EXPERIMENT_NAME="setup_exp"
 OUTPUT_DATA_FOLDER="${COMMIT_HASH}"_"${EXPERIMENT_NAME}"
-./scripts/run.sh ./scripts/experiments/setup_exp.sh -d 1 -r 1 -c ${EXPERIMENT_NAME}
+./scripts/run.sh ./scripts/experiments/setup_exp.sh -d 1 -r 1 -c "${EXPERIMENT_NAME}"
 python3 "${PLOT_SCRIPT}" --path "${OUTPUT_PATH}" --experiment "${OUTPUT_DATA_FOLDER}" --name carcloud --plot soa
 
 
