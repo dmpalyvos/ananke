@@ -45,7 +45,7 @@ This method will automatically download Apache Flink 1.10 and the input datasets
 You are now done with the setup. To run a short demonstrator experiment for checking the success of the setup run the following line:
 
 ```bash
-./scripts/run.sh ./scripts/experiments/setup_exp.sh -d 1 -r 1.
+./scripts/run.sh ./scripts/experiments/setup_exp.sh -d 1 -r 1
 ```
 
 ## Running Experiments
@@ -56,7 +56,9 @@ Experiment scripts are found in `scripts/experiments` and can be executed by cal
 # Run lrAnankeCompare (experiment underlying Figure 10) for 10 reps of 10 minutes
 ./scripts/run.sh ./scripts/experiments/lrAnankeCompare.sh -d 10 -r 10
 ```
-Result files are stored in the folder `data/output`.
+Result files are stored in the folder `data/output`. 
+
+*Note that the experiment scripts are quite verbose and print various debugging information. It should be safe to ignore any warnings or errors as long as the figures are generated successfully.*
 
 ### Solving Memory Issues
 
