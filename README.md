@@ -50,6 +50,23 @@ You are now done with the setup. To run a short demonstrator experiment for chec
 
 ## Running Experiments
 
+### Automatic Reproduction of the Paper's Experiments and Plots
+
+Here, we describe how to automatically reproduce the results from our paper on your available hardware.
+
+The folder `reproduce/` contains one bash script labelled as the corresponding figure in the paper. Executing such a script will run the experiment automatically, store the results, and create a plot of them. When reproducing Figure 19 or Table 2, `dockerd` must be running. Simply enter the folder and execute, e.g.
+
+```bash
+# Reproduce Figure 10 in the paper
+cd reproduce
+./figure10.sh
+```
+For running variations of the experiments and plotting the results, we suggest inspecting the bash scripts in the `reproduce` folder.
+Beware that the hardware the experiments were executed on (as indicated in the paper) may differ from yours.
+*Note: The Smart Grid dataset cannot be made available due to agreement limitations.*
+
+### Manual Experiment Execution 
+
 Experiment scripts are found in `scripts/experiments` and can be executed by calling `scripts/run.sh` from the top-level directory of the project. The run script takes care of creating output directories based on the commit hash and the date, and it also preprocesses the output after the end of the experiment. It can control maximum duration, number of repetitions, etc. using CLI args. For example:
 
 ```bash
@@ -69,17 +86,3 @@ You can configure this in `$FLINK_DIR/conf/flink-conf.yaml`, where `$FLINK_DIR` 
 ```yaml
 taskmanager.memory.process.size: 32000m
 ```
-
-### Automatic reproduction of paper's experiments and plots
-
-Here, we describe how to automatically reproduce the results from our paper on your available hardware.
-
-The folder `reproduce/` contains one bash script labelled as the corresponding figure in the paper. Executing such a script will run the experiment automatically, store the results, and create a plot of them. When reproducing Figure 19 or Table 2, `dockerd` must be running. Simply enter the folder and execute, e.g.
-
-```bash
-# Reproduce Figure 10 in the paper
-./figure10.sh
-```
-For running variations of the experiments and plotting the results, we suggest inspecting the bash scripts in the `reproduce` folder.
-Beware that the hardware the experiments were executed on (as indicated in the paper) may differ from yours.
-*Note: The Smart Grid dataset cannot be made available due to agreement limitations.*
