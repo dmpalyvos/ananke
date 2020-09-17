@@ -48,6 +48,16 @@ You are now done with the setup. To run a short demonstrator experiment for chec
 ./scripts/run.sh ./scripts/experiments/setup_exp.sh -d 1 -r 1
 ```
 
+### Flink Configuration
+
+To make sure all experiments (especially the ones executed the Xeon-Phi server) have the necessary resources to run, edit `$FLINK_DIR/conf/flink-conf.yaml`, where `$FLINK_DIR` is the directory of your flink installation, and change the following attributes:
+
+```yaml
+taskmanager.memory.process.size: 32000m
+taskmanager.numberOfTaskSlots: 32
+```
+*Note: Due to the way Flink and Java allocate and garbage-collect memory, the absolute memory consumption in some experiments might differ from the figures in the paper, but this configuration ensures that all experiments can be executed successfully.*
+
 ## Running Experiments
 
 ### Automatic Reproduction of the Paper's Experiments and Plots
@@ -77,12 +87,3 @@ Result files are stored in the folder `data/output`.
 
 *Note that the experiment scripts are quite verbose and print various debugging information. It should be safe to ignore any warnings or errors as long as the figures are generated successfully.*
 
-### Solving Memory Issues
-
-Some experiments (mainly the synthetic ones) have high memory requirements, so you might need to increase
-the memory allocated to Flink's TaskManger to avoid crashes.
-In our tests, 32GB were enough to run all experiments.
-You can configure this in `$FLINK_DIR/conf/flink-conf.yaml`, where `$FLINK_DIR` is the directory of your flink installation:
-```yaml
-taskmanager.memory.process.size: 32000m
-```
