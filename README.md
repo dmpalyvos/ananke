@@ -56,7 +56,9 @@ To make sure all experiments (especially the ones executed the Xeon-Phi server) 
 taskmanager.memory.process.size: 32000m
 taskmanager.numberOfTaskSlots: 32
 ```
-*Note: Due to the way Flink and Java allocate and garbage-collect memory, the absolute memory consumption in some experiments might differ from the figures in the paper, but this configuration ensures that all experiments can be executed successfully.*
+*Note: Due to the way Flink and Java allocate and garbage-collect memory, the absolute memory consumption in some experiments might differ from the figures in the paper, 
+but this configuration ensures that all experiments can be executed successfully. 
+Alternatively, you can find the exact flink configuration of each experiment at `reproduce/flink-conf/`*.
 
 ## Running Experiments
 
