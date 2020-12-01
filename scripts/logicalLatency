@@ -9,7 +9,7 @@ fi
 
 
 COMMIT_HASH=$(git rev-parse --short HEAD)
-JAR="$(pwd)/target/genealog-flink-experiments-${COMMIT_HASH}.jar"
+JAR="$(pwd)/target/ananke-${COMMIT_HASH}.jar"
 
 cd $1
 for outFile in *.out; do
