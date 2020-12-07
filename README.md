@@ -1,6 +1,9 @@
 # Ananke
 
-This repository contains the implementation of the Ananke provenance framework, as well as performance evaluation experiments.
+This repository contains the implementation of the Ananke provenance framework and related performance evaluation experiments, as described in the publication:
+
+> *Dimitris Palyvos-Giannas, Bastian Havers, Marina Papatriantafilou, and Vincenzo Gulisano. **[Ananke: A Streaming Framework for Live Forward Provenance](https://vldb.org/pvldb/vol14/p391-palyvos-giannas.pdf)**. PVLDB, 14(3): 391 - 403, 2021. doi:10.14778/3430915.3430928*
+
 In the following, we are providing necessary setup steps as well as instructions on how to run the experiments from our paper and how to visualize them.
 All steps have been tested under **Ubuntu 20.04**.
 
