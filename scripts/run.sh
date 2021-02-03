@@ -2,7 +2,7 @@
 
 # CLI ARGS
 
-usage() { echo "Usage: $0 EXPERIMENT_SCRIPT [-d <duration > 0>] [-e <server|odroid>] [-c <commit_code>] [-p <parallelism > 0>] [-r <reps > 0>] [-v <variant_abbreviation>] [-g]" 1>&2; exit 1; }
+usage() { echo "Usage: $0 EXPERIMENT_SCRIPT [-d <duration > 0>] [-e <server|odroid>] [-c <commit_code>] [-p <parallelism > 0>] [-r <reps > 0>] [-v <variant_abbreviation>] [-g] [-x]" 1>&2; exit 1; }
 
 function configError() {
   echo "Error in experiment configuration: $1"
@@ -26,7 +26,7 @@ REPS="1"
 COMMIT_CODE=$(date +%j_%H%M)
 [[ $(hostname) = odroid* ]] && EXECUTION_ENVIRONMENT="odroid" || EXECUTION_ENVIRONMENT="normal"
 
-while getopts ":d:e:v:c:p:r:h:g" o; do
+while getopts "d:e:v:c:p:r:ghx" o; do
     case "${o}" in
         d)
            DURATION=${OPTARG}
@@ -305,8 +305,9 @@ for node in "${nodes[@]}"; do
 done
 
 if [[ $DISCARD_OUTPUT == "true" ]]; then
-  find "$OUTPUT_FOLDER" -name logical-latency.csv -delete
-  find "$OUTPUT_FOLDER" -name *.out -delete
+  echo "Cleaning output..."
+  find "$OUTPUT_FOLDER" -name "logical-latency*.csv" -delete
+  find "$OUTPUT_FOLDER" -name "*.out" -delete
 fi
 
 # Preprocess results
