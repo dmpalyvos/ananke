@@ -15,4 +15,4 @@ variantExtraArgs=(
 "--provenanceActivator ANANKE --sinkParallelism 1 --syntheticSourceParallelism 1 --syntheticProvenanceOverlap 0 --syntheticProvenanceSize 50"
 "--provenanceActivator ANANKE --sinkParallelism 1 --syntheticSourceParallelism 1 --syntheticProvenanceOverlap 0 --syntheticProvenanceSize 100"
 )
-EXPERIMENT_ARGS="--syntheticInputLength 50000 --syntheticDelay 25 --syntheticTupleSize 32 --disableSinkChaining --aggregateStrategy sortedPtr --maxParallelism 1"
+EXPERIMENT_ARGS="--syntheticInputLength 250000 --syntheticDelay 25 --syntheticTupleSize 32 --disableSinkChaining --aggregateStrategy sortedPtr --maxParallelism 1"

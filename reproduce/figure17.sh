@@ -11,7 +11,7 @@ echo "Reproduce the figure in two steps:"
 echo "   1) run the underlying experiment"
 echo "   2) plot the experiment data"
 test -d "${OUTPUT_PATH}/${OUTPUT_DATA_FOLDER}" && { echo "--------"; echo WARNING: Output folder "${OUTPUT_PATH}/${OUTPUT_DATA_FOLDER}" exists already. Proceeding anyways.; }
-echo "WARNING: This experiment consumes a lot of memory. Please ensure that the Flink taskexecutor is configured to use at least 32GB RAM."
+echo "WARNING: This experiment consumes a lot of memory. Please ensure that the Flink taskexecutor is configured to use at least 64GB RAM."
 countdown 5 "to begin."
 
 # run experiment

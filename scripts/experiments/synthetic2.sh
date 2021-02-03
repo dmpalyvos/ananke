@@ -64,7 +64,7 @@ variantAbbreviations=(
 "ANK.8.32.25.50"
 "ANKS.8.32.25.50"
 )
-VARIANT_BASE_ARGS="--syntheticInputLength 50000 --syntheticDelay 25 --syntheticTupleSize 32 --disableSinkChaining --aggregateStrategy sortedPtr --graphEncoder NoOpProvenanceGraphEncoder --maxParallelism 32"
+VARIANT_BASE_ARGS="--syntheticInputLength 350000 --syntheticDelay 25 --syntheticTupleSize 32 --disableSinkChaining --aggregateStrategy sortedPtr --graphEncoder NoOpProvenanceGraphEncoder --maxParallelism 32"
 variantExtraArgs=(
 "--provenanceActivator ANANKE --sinkParallelism 1 --syntheticSourceParallelism 1 --syntheticProvenanceOverlap 12 --syntheticProvenanceSize 50 $VARIANT_BASE_ARGS "
 "--provenanceActivator ANANKE_STD --sinkParallelism 1 --syntheticSourceParallelism 1 --syntheticProvenanceOverlap 12 --syntheticProvenanceSize 50 $VARIANT_BASE_ARGS "
