@@ -114,26 +114,32 @@ def pivotTable(synthetic):
     df = expandSyntheticCols(config.DATA) if synthetic else config.DATA
     df['derivative'] = df.groupby(['parameter', 'variant']).value.transform(derivative)
     
-    pivot = pd.pivot_table(df, values=['value'], index=['parameter'], columns=['variant', 'rep'])
-    
+    pivot = pd.pivot_table(df, values=['value'], index=['parameter'], columns=['variant'])
     pivot.loc['provratio(R/W)'] = pivot.loc['provreads'] / pivot.loc['provwrites']
-    pivot.loc['rate_adjusted'] = pivot.loc['rate'] * pivot.loc['provratio(R/W)']
-    pivot.loc['latency_adjusted'] = pivot.loc['latency'] / pivot.loc['provratio(R/W)']
-    pivot = pivot.reindex(index=['rate', 'latency', 'deliverylatency', 'provtime', 'provreads', 'provwrites', 'provratio(R/W)', 'memory', 'cpu'])
-#     pivot = pivot.reindex(index=['rate', 'latency', 'deliverylatency', 'provratio(R/W)', 'cpu'])
+    pivot = pivot.reindex(index=['rate', 'latency', 'deliverylatency', 'cpu', 'provratio(R/W)'])
 
     pivot = pivot.apply(roundPivot, axis=1)
-    print('----- Absolute Values -----')
-    display(pivot)
+    print()
+    print('----------------------------')
+    print('----- Comparison Table -----')
+    print('----------------------------')
+    print()
+    print('----------------------------')
+    print('----- Absolute Values ------')
+    print('----------------------------')
+    print(pivot)
+    print()
+    print('----------------------------')
     print('----- Percentage Diffs -----')
+    print('----------------------------')
     percentages = pivot.apply(computePercentageDiffs, axis=1)
-    display(percentages)
+    print(percentages)
+    print()
     path = f'{config.REPORT_FOLDER}/pivot.xlsx'
     with pd.ExcelWriter(path) as writer:
         pivot.to_excel(writer, 'Values')
         percentages.to_excel(writer, 'Percentages')
         print(f'Saved {path}')
-
 
 
 def drillDown():
@@ -358,7 +364,7 @@ def synthetic2():
     
 PLOT_FUNCTIONS_DICT = {'soa': soaComparison2, 
                        'external': soaComparison3, 
-                       'table': pivotTable,
+                       'table': lambda: pivotTable(True),
                        'synthetic1': synthetic1,
                        'synthetic2': synthetic2,
                        'logicallatency': plotLogicalLatency}
