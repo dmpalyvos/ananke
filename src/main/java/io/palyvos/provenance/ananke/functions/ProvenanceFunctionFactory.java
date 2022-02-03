@@ -11,6 +11,7 @@ import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.api.common.functions.JoinFunction;
 import org.apache.flink.api.common.functions.MapFunction;
 import org.apache.flink.api.java.functions.KeySelector;
+import org.apache.flink.streaming.api.functions.co.ProcessJoinFunction;
 import org.apache.flink.streaming.api.functions.sink.SinkFunction;
 
 public class ProvenanceFunctionFactory {
@@ -35,14 +36,15 @@ public class ProvenanceFunctionFactory {
   }
 
 
-  public <T, KEY> KeySelector<ProvenanceTupleContainer<T>, KEY> key(KeySelector<T, KEY> delegate, Class<KEY> clazz) {
+  public <T, KEY> KeySelector<ProvenanceTupleContainer<T>, KEY> key(KeySelector<T, KEY> delegate,
+      Class<KEY> clazz) {
     return new ProvenanceKeySelectorWithTypeInfo<>(delegate, clazz);
   }
 
   public <IN, ACC, OUT>
-      AggregateFunction<
-          ProvenanceTupleContainer<IN>, GenealogMetadataAccumulator<ACC>, ProvenanceTupleContainer<OUT>>
-          aggregate(AggregateFunction<IN, ACC, OUT> delegate) {
+  AggregateFunction<
+      ProvenanceTupleContainer<IN>, GenealogMetadataAccumulator<ACC>, ProvenanceTupleContainer<OUT>>
+  aggregate(AggregateFunction<IN, ACC, OUT> delegate) {
     return new ProvenanceAggregateFunction<>(aggregateStrategy, delegate);
   }
 
@@ -58,10 +60,17 @@ public class ProvenanceFunctionFactory {
 
 
   public <IN1, IN2, OUT>
-      JoinFunction<
-          ProvenanceTupleContainer<IN1>, ProvenanceTupleContainer<IN2>, ProvenanceTupleContainer<OUT>>
-          join(JoinFunction<IN1, IN2, OUT> delegate) {
+  JoinFunction<
+      ProvenanceTupleContainer<IN1>, ProvenanceTupleContainer<IN2>, ProvenanceTupleContainer<OUT>>
+  join(JoinFunction<IN1, IN2, OUT> delegate) {
     return new ProvenanceJoinFunction<>(delegate);
+  }
+
+  public <IN1, IN2, OUT>
+  ProcessJoinFunction<
+      ProvenanceTupleContainer<IN1>, ProvenanceTupleContainer<IN2>, ProvenanceTupleContainer<OUT>>
+  processJoin(ProcessJoinFunction<IN1, IN2, OUT> delegate) {
+    return new ProvenanceProcessJoinFunction<>(delegate);
   }
 
   public <T> SinkFunction<ProvenanceTupleContainer<T>> sink(SinkFunction<T> delegate) {
