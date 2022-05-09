@@ -7,15 +7,13 @@ import java.util.Objects;
 
 class PointerListIterator implements Iterator<GenealogTuple> {
 
-  private final GenealogTuple start;
   private final GenealogTuple end;
   private GenealogTuple current;
   private boolean hasNext;
 
   public PointerListIterator(GenealogTuple start, GenealogTuple end) {
-    this.start = start;
-    this.end = end;
     this.current = start;
+    this.end = end;
     this.hasNext = true;
   }
 
@@ -34,10 +32,10 @@ class PointerListIterator implements Iterator<GenealogTuple> {
       hasNext = false;
     } else {
       if (current == null) {
-        throw new IllegalStateException();
+        throw new IllegalStateException(String.format(
+            "Looks like provenance pointers are not ordered correctly. Try to use an order-independent aggregate strategy instead, e.g., %s",
+            SortedPointersAggregateStrategy.class));
       }
-//          current,
-//          "Incorrect provenance ordering. Please use an order-independent aggregate strategy instead. Start=%s, End=%s", start, end);
       current = current.getNext();
     }
     return result;

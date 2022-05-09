@@ -3,6 +3,7 @@ package io.palyvos.provenance.ananke.aggregate;
 import io.palyvos.provenance.genealog.GenealogTuple;
 import io.palyvos.provenance.genealog.GenealogTupleType;
 import java.util.Iterator;
+import org.apache.commons.lang3.Validate;
 
 /**
  * {@link ProvenanceAggregateStrategy} that maintains provenance as a pointer list. The ordering of
@@ -41,6 +42,17 @@ public class UnsortedPointersAggregateStrategy implements ProvenanceAggregateStr
   @Override
   public final <T extends GenealogTuple> Iterator<GenealogTuple> provenanceIterator(T tuple) {
     return new PointerListIterator(tuple.getU2(), tuple.getU1());
+  }
+
+  @Override
+  public ProvenanceAggregateStrategy merge(ProvenanceAggregateStrategy other) {
+    Validate.notNull(other, "other");
+    Validate.isInstanceOf(UnsortedPointersAggregateStrategy.class, other,
+        "Only ProvenanceAggregateStrategies of same type can be merged!");
+    UnsortedPointersAggregateStrategy otherPointersStrategy = (UnsortedPointersAggregateStrategy) other;
+    latest.setNext(otherPointersStrategy.earliest);
+    latest = otherPointersStrategy.latest;
+    return this;
   }
 
 }
